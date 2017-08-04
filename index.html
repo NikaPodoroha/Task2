@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Calendar</title>
+    <style type="text/css">
+        td {
+            onclick: 'addByCells()';
+            width: 10px;
+            height: 100px;
+            border: 1px solid blue;
+            padding: 2px;
+            empty-cells: hide;
+        }
+
+        table {
+            table-layout: fixed;
+            border-collapse: separate;
+            width: 75%;
+            align: left;
+            line-height: 19px;
+            text-align: left;
+        }
+
+        text {
+            position: relative;
+            top: 0;
+            left: -10%;
+        }
+
+    </style>
+
+</head>
+
+<body>
+<div id='button'>
+    <button onclick="addByButton()">Добавить</button>
+    <button>Обновить</button>
+</div>
+<div id="month">
+
+</div>
+
+<div>
+    <table id="calendar"></table>
+</div>
+
+<script>
+    function Calendar(id, year, month) {
+        var table = document.getElementById(id);
+        var monthNames = ["Январь ", "Февраль ", "Март ", "Апрель ", "Май ", "Июнь ", "Июль ", "Август ", "Сентябрь ", "Октябрь ", "Ноябрь ", "Декабрь "];
+        var dayNames = [" Понедельник, ", " Вторник, ", " Среда, ", " Четверг, ", " Пятница, ", " Суббота, ", " Воскресенье, "];
+        //ThisMonth - TM
+        //LastMonth - LM
+        //NextMonth - NM
+        var firstWeekDayTM = getWeekDay(new Date(year, (month), 1));
+        var firstWeekDayNM = getWeekDay(new Date(year, (month + 1), 1));
+        var lastDayTM = new Date(year, (month + 1), 0).getDate();
+        var lastWeekDayTM = getWeekDay(new Date(year, (month + 1), 0));
+        var lastDayLM = new Date(year, (month), 0).getDate();
+        var lastWeekDayLM = getWeekDay(new Date(year, (month), 0));
+        var row_0 = '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' + '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' +
+            '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' + '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' +
+            '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' + '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+        table.innerHTML = row_0;
+        var text = document.getElementById('month');
+        text.innerHTML = monthNames[month];
+        var select = document.createElement('select');
+        for (var i = 0; i < monthNames.length; i++) {
+
+            var option = document.createElement('option');
+            option.innerHTML = monthNames[i];
+            select.appendChild(option);
+
+        }
+        text.appendChild(select);
+
+        if (firstWeekDayTM !== 0) {
+            var j = 1;
+            var c = lastDayLM - lastWeekDayLM;
+            var td = document.getElementsByTagName('td');
+            for (var i = 0; i < dayNames.length; i++) {
+                if (i >= firstWeekDayTM) {
+                    td[i].innerHTML = dayNames[i] + j;
+                    j++;
+                } else {
+                    td[i].innerHTML = dayNames[i] + c;
+                    c++;
+                }
+            }
+            for (; j <= lastDayTM; i++ && j++) {
+                td[i].innerHTML = j;
+            }
+        } else {
+            var j = 1;
+            for (i = 0; i < dayNames.length; j++ && i++) {
+                td[i].innerHTML = dayNames[i] + j;
+            }
+            for (; j <= lastDayTM; j++) {
+                td[i].innerHTML = j;
+            }
+        }
+        if (lastWeekDayTM !== 6) {
+            for (var j = 1; firstWeekDayNM <= 6; j++ && i++) {
+                td[i].innerHTML = j;
+                firstWeekDayNM++;
+            }
+        }
+
+    }
+
+
+    function getWeekDay(date) {
+        var weekDay = date.getDay();
+        if (weekDay == 0) weekDay = 7;
+        return weekDay - 1;
+    }
+
+    new Calendar("calendar", new Date().getFullYear(), new Date().getMonth());
+
+    document.getElementById('month').onchange = function calendar() {
+        new Calendar("calendar", new Date().getFullYear(), parseInt(document.querySelector('select').options[document.querySelector('select').selectedIndex].value));
+    }
+
+
+    function addByButton() {
+        var div = document.getElementById('1');
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'addByButton';
+        div.appendChild(input);
+    };
+
+
+</script>
+</body>
+
+</html>
